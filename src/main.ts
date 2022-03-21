@@ -1,5 +1,9 @@
 import { App } from './app';
+import { loggerService } from './services/logger';
 
-const app = new App(8800);
+async function bootstrapp() {
+	const app = new App(new loggerService());
+	app.init();
+}
 
-app.init();
+bootstrapp()
