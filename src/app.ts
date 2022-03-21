@@ -13,12 +13,20 @@ export class App {
 		this.port = port
 	}
 
-	public async init() {
+	private useRoutes() {
 		this.app.use('/user', userRouter);
-		this.app.use(errorHandler);
+	}
 
-		this.server = this.app.listen(this.port, () => {
-			console.log(`Сервер запущен на http://localhost:${this.port}`);
-		})
+	private useExceptions() {
+		this.app.use(errorHandler);
+	}
+
+	public async init() {
+		
+		this.useRoutes()
+		this.useExceptions()
+
+		this.server = this.app.listen(this.port);
+		console.log(`Сервер запущен на http://localhost:${this.port}`);
 	}
 }
