@@ -2,7 +2,7 @@ import express from 'express';
 
 const userRouter = express.Router();
 
-userRouter.get('/hello', (req, res) => {
+userRouter.get('/login', (req, res) => {
 	res.status(200).json({message: 'Is`s working'});
 });
 
