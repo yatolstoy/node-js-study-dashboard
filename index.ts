@@ -9,7 +9,6 @@ app.use('/router', userRouter);
 
 app.get('/hello', (req, res) => {
 	throw new Error('Кастомная ошибка!');
-	// res.send('У меня получилось!');
 })
 
 app.use(errorHandler);
