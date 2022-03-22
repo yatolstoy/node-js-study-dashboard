@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { BaseController } from '../common/base.controller';
 import { IControllerRoute } from '../common/route.interface';
+import { HTTPError } from '../errors/HttpError.class';
 import { loggerService } from '../services/logger';
 
 export class UserController extends BaseController {
@@ -14,7 +15,7 @@ export class UserController extends BaseController {
 	}
 
 	login(req: Request, res: Response, next: NextFunction) {
-		this.created(res)
+		next(new HTTPError('Ошибка авторизации', 401, 'login'));
 	}
 
 	register(req: Request, res: Response, next: NextFunction) {
