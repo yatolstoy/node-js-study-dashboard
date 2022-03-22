@@ -1,23 +1,26 @@
 import express, { Express } from 'express'
 import { Server } from 'http'
 import { errorHandler } from './middlewares/error.middleware'
-import { userRouter } from './routes/user.route'
 import { loggerService } from './services/logger'
+import { UserController } from './users/users.controller'
 
 export class App {
 	app: Express
 	port: number
 	server: Server
 	logger: loggerService
+	userController: UserController
 
-	constructor(logger: loggerService) {
+	constructor(logger: loggerService, userController: UserController) {
 		this.app = express()
 		this.port = 8800
 		this.logger = logger
+
+		this.userController = userController
 	}
 
 	private useRoutes() {
-		this.app.use('/user', userRouter);
+		this.app.use('/user', this.userController.router);
 	}
 
 	private useExceptions() {
