@@ -20,7 +20,6 @@ export class UserController extends BaseController implements IUserController {
 	}
 
 	login(req: Request, res: Response, next: NextFunction): void {
-		console.log('thoose');
 		next(new HTTPError('Ошибка авторизации', 401, 'login'));
 	}
 
