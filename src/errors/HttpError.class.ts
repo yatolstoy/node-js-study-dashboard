@@ -6,8 +6,8 @@ export class HTTPError extends Error {
 	constructor(message: string, code: number, context?: string) {
 		super(message);
 
-		this.message = message
-		this.code = code 
-		this.context = context
+		this.message = message;
+		this.code = code;
+		this.context = context;
 	}
 }

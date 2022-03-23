@@ -7,19 +7,17 @@ import { HTTPError } from './HttpError.class';
 
 @injectable()
 export class ExceptionFilter implements IExceptionFilter {
-
 	constructor(@inject(TYPES.Logger) private logger: ILogger) {
-		this.logger = logger
+		this.logger = logger;
 	}
 
-	catch(err: Error | HTTPError, req: Request, res: Response, next: NextFunction) {
-		if(err instanceof HTTPError) {
+	catch(err: Error | HTTPError, req: Request, res: Response, next: NextFunction): void {
+		if (err instanceof HTTPError) {
 			this.logger.error(`[${err.context}] Ошибка ${err.code}: ${err.message}`);
 			res.sendStatus(err.code);
 		} else {
 			this.logger.error(`Ошибка: ${err.message}`);
 			res.sendStatus(500).send(err.message);
 		}
-		
 	}
 }

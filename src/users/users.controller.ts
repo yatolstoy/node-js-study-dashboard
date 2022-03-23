@@ -8,25 +8,22 @@ import { TYPES } from '../types';
 import { IUserController } from './user.interface';
 import 'reflect-metadata';
 
-
 @injectable()
 export class UserController extends BaseController implements IUserController {
-	constructor(
-		@inject(TYPES.Logger) private loggerService: ILogger
-	) {
+	constructor(@inject(TYPES.Logger) private loggerService: ILogger) {
 		super(loggerService);
 		const routes: IControllerRoute[] = [
 			{ path: '/login', method: 'get', func: this.login },
-			{ path: '/register', method: 'get', func: this.register }
-		]
+			{ path: '/register', method: 'get', func: this.register },
+		];
 		this.bindRoutes(routes);
 	}
 
-	login(req: Request, res: Response, next: NextFunction) {
+	login(req: Request, res: Response, next: NextFunction): void {
 		next(new HTTPError('Ошибка авторизации', 401, 'login'));
 	}
 
-	register(req: Request, res: Response, next: NextFunction) {
-		this.ok(res, 'Регистрация работает')
+	register(req: Request, res: Response, next: NextFunction): void {
+		this.ok(res, 'Регистрация работает');
 	}
 }
