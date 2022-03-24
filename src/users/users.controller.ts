@@ -7,23 +7,41 @@ import { ILogger } from '../logger/logger.interface';
 import { TYPES } from '../types';
 import { IUserController } from './user.interface';
 import 'reflect-metadata';
+import { LoginUserDto } from './dto/login-user.dto';
+import { RegisterUserDto } from './dto/register-user.dto';
+import { IUserService } from './user.service.interface';
 
 @injectable()
 export class UserController extends BaseController implements IUserController {
-	constructor(@inject(TYPES.Logger) private loggerService: ILogger) {
+	constructor(
+		@inject(TYPES.Logger) private loggerService: ILogger,
+		@inject(TYPES.UserService) private userService: IUserService,
+	) {
 		super(loggerService);
+		4;
 		const routes: IControllerRoute[] = [
-			{ path: '/login', method: 'get', func: this.login },
-			{ path: '/register', method: 'get', func: this.register },
+			{
+				path: '/login',
+				method: 'post',
+				func: this.login,
+				middlewares: [],
+			},
+			{ path: '/register', method: 'post', func: this.register },
 		];
 		this.bindRoutes(routes);
 	}
 
-	login(req: Request, res: Response, next: NextFunction): void {
+	login(req: Request<{}, {}, LoginUserDto>, res: Response, next: NextFunction): void {
 		next(new HTTPError('Ошибка авторизации', 401, 'login'));
 	}
 
-	register(req: Request, res: Response, next: NextFunction): void {
-		this.ok(res, 'Регистрация работает');
+	async register(
+		{ body }: Request<{}, {}, RegisterUserDto>,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		const result = await this.userService.create(body);
+		if (!result) return next(new HTTPError('Такой пользователь уже существует', 433, 'Register'));
+		this.ok(res, result);
 	}
 }
