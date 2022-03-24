@@ -33,7 +33,9 @@ export class BaseController {
 		for (const route of routes) {
 			this.logger.log(`[${route.method}]: ${route.path}`);
 			const handler = route.func.bind(this);
-			this.router[route.method](route.path, handler);
+			const middlewares = route.middlewares?.map((m) => m.execute.bind(m));
+			const pipeline = middlewares ? [...middlewares, handler] : handler;
+			this.router[route.method](route.path, pipeline);
 		}
 	}
 }

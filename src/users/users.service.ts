@@ -9,7 +9,7 @@ export class UserService implements IUserService {
 	async create({ login, name, password }: RegisterUserDto): Promise<User | null> {
 		const user = new User(login, name);
 		await user.setPassword(password);
-		return null;
+		return user || null;
 	}
 
 	validate(dto: LoginUserDto): boolean {
