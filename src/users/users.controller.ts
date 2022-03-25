@@ -48,6 +48,6 @@ export class UserController extends BaseController implements IUserController {
 	): Promise<void> {
 		const result = await this.userService.create(body);
 		if (!result) return next(new HTTPError('Такой пользователь уже существует', 433, 'Register'));
-		this.ok(res, result);
+		this.ok(res, { login: result.login, id: result.id });
 	}
 }
