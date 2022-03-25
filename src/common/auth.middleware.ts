@@ -9,19 +9,16 @@ export class AuthMiddleware implements IMiddleware {
 		if (header && header.indexOf('Bearer ') !== -1) {
 			const jwt = header.split(' ')[1];
 			const payload = await this.asyncVerify(jwt);
-			req.user = payload.login;
+			req.user = payload ? payload.login : undefined;
 		}
 		next();
 	}
 
-	async asyncVerify(jwt: string): Promise<JwtPayload> {
-		return new Promise((resolve, reject) => {
+	private async asyncVerify(jwt: string): Promise<JwtPayload | null> {
+		return new Promise((resolve) => {
 			verify(jwt, this.secret, (err, payload) => {
-				if (!err && payload && typeof payload !== 'string') {
-					resolve(payload);
-				} else {
-					reject();
-				}
+				const result = !err && payload && typeof payload !== 'string' ? payload : null;
+				resolve(result);
 			});
 		});
 	}

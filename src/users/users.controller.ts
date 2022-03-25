@@ -13,6 +13,8 @@ import { IUserService } from './user.service.interface';
 import { ValidateMiddleware } from '../common/validate.middleware';
 import { sign } from 'jsonwebtoken';
 import { IConfigService } from '../config/config.service.interface';
+import { AuthGuard } from '../common/auth.guard';
+import { InfoUserDto } from './dto/info-user.dto';
 
 @injectable()
 export class UserController extends BaseController implements IUserController {
@@ -38,9 +40,9 @@ export class UserController extends BaseController implements IUserController {
 			},
 			{
 				path: '/info',
-				method: 'post',
+				method: 'get',
 				func: this.info,
-				middlewares: [],
+				middlewares: [new AuthGuard()],
 			},
 		];
 		this.bindRoutes(routes);
@@ -51,7 +53,7 @@ export class UserController extends BaseController implements IUserController {
 		res: Response,
 		next: NextFunction,
 	): Promise<void> {
-		const userValidate = await this.userService.validate(body);
+		const userValidate = await this.userService.validateUser(body);
 		if (!userValidate) {
 			next(new HTTPError('Ошибка авторизации', 401, 'login'));
 			return;
@@ -65,13 +67,18 @@ export class UserController extends BaseController implements IUserController {
 		res: Response,
 		next: NextFunction,
 	): Promise<void> {
-		const result = await this.userService.create(body);
+		const result = await this.userService.createUser(body);
 		if (!result) return next(new HTTPError('Такой пользователь уже существует', 433, 'Register'));
 		this.ok(res, { login: result.login, id: result.id });
 	}
 
-	info({ user }: Request, res: Response, next: NextFunction): void {
-		this.ok(res, { login: user });
+	async info(
+		{ body }: Request<{}, {}, InfoUserDto>,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		const result = await this.userService.getUserInfo(body);
+		this.ok(res, { login: result?.login, id: result?.id });
 	}
 
 	async signJWTToken(login: string): Promise<string> {
