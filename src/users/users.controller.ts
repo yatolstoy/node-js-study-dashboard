@@ -36,6 +36,12 @@ export class UserController extends BaseController implements IUserController {
 				func: this.register,
 				middlewares: [new ValidateMiddleware(RegisterUserDto)],
 			},
+			{
+				path: '/info',
+				method: 'post',
+				func: this.info,
+				middlewares: [],
+			},
 		];
 		this.bindRoutes(routes);
 	}
@@ -62,6 +68,10 @@ export class UserController extends BaseController implements IUserController {
 		const result = await this.userService.create(body);
 		if (!result) return next(new HTTPError('Такой пользователь уже существует', 433, 'Register'));
 		this.ok(res, { login: result.login, id: result.id });
+	}
+
+	info({ user }: Request, res: Response, next: NextFunction): void {
+		this.ok(res, { login: user });
 	}
 
 	async signJWTToken(login: string): Promise<string> {
