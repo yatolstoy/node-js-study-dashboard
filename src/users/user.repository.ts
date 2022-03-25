@@ -14,7 +14,7 @@ export class UserRepository implements IUserRepository {
 			data: {
 				login,
 				password,
-				name,
+				name: name || '',
 			},
 		});
 	}

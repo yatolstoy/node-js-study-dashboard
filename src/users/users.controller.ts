@@ -37,7 +37,16 @@ export class UserController extends BaseController implements IUserController {
 		this.bindRoutes(routes);
 	}
 
-	login(req: Request<{}, {}, LoginUserDto>, res: Response, next: NextFunction): void {
+	async login(
+		{ body }: Request<{}, {}, LoginUserDto>,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		const userValidate = await this.userService.validate(body);
+		if (userValidate) {
+			this.ok(res, { jwt: 'someJWT' });
+			return;
+		}
 		next(new HTTPError('Ошибка авторизации', 401, 'login'));
 	}
 

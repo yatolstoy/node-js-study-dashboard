@@ -4,5 +4,5 @@ import { RegisterUserDto } from './dto/register-user.dto';
 
 export interface IUserService {
 	create: (dto: RegisterUserDto) => Promise<UserModel | null>;
-	validate: (dto: LoginUserDto) => boolean;
+	validate: (dto: LoginUserDto) => Promise<boolean>;
 }
