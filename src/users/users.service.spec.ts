@@ -33,6 +33,8 @@ beforeAll(() => {
 	userService = container.get<IUserService>(TYPES.UserService);
 });
 
+let createdUser: UserModel | null;
+
 // Описывает что тестируем
 describe('User Service', () => {
 	//Конкретный тест
@@ -46,13 +48,40 @@ describe('User Service', () => {
 				id: 1,
 			}),
 		);
-		const createUser = await userService.createUser({
+		createdUser = await userService.createUser({
 			login: 'a@a.ru',
 			name: 'Вася',
 			password: '1',
 		});
-		expect(createUser?.id).toEqual(1);
-		expect(createUser?.password).not.toEqual('1');
+		expect(createdUser?.id).toEqual(1);
+		expect(createdUser?.password).not.toEqual('1');
+	});
+
+	it('validateUser same password', async () => {
+		userRepository.find = jest.fn().mockReturnValueOnce(createdUser);
+		const validateUser = await userService.validateUser({
+			login: 'a@a.ru',
+			password: '1',
+		});
+		expect(validateUser).toEqual(true);
+	});
+
+	it('validateUser not the same password', async () => {
+		userRepository.find = jest.fn().mockReturnValueOnce(createdUser);
+		const validateUser = await userService.validateUser({
+			login: 'a@a.ru',
+			password: '123',
+		});
+		expect(validateUser).toEqual(false);
+	});
+
+	it('validateUser no user', async () => {
+		userRepository.find = jest.fn().mockReturnValue(null);
+		const validateUser = await userService.validateUser({
+			login: 'a@a.ru',
+			password: '123',
+		});
+		expect(validateUser).toEqual(false);
 	});
 });
 
