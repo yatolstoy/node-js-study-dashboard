@@ -14,7 +14,6 @@ import { ValidateMiddleware } from '../common/validate.middleware';
 import { sign } from 'jsonwebtoken';
 import { IConfigService } from '../config/config.service.interface';
 import { AuthGuard } from '../common/auth.guard';
-import { InfoUserDto } from './dto/info-user.dto';
 
 @injectable()
 export class UserController extends BaseController implements IUserController {
@@ -72,12 +71,8 @@ export class UserController extends BaseController implements IUserController {
 		this.ok(res, { login: result.login, id: result.id });
 	}
 
-	async info(
-		{ body }: Request<{}, {}, InfoUserDto>,
-		res: Response,
-		next: NextFunction,
-	): Promise<void> {
-		const result = await this.userService.getUserInfo(body);
+	async info({ user }: Request, res: Response, next: NextFunction): Promise<void> {
+		const result = await this.userService.getUserInfo(user);
 		this.ok(res, { login: result?.login, id: result?.id });
 	}
 

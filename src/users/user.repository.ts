@@ -19,7 +19,7 @@ export class UserRepository implements IUserRepository {
 		});
 	}
 	async find({ login }: User): Promise<UserModel | null> {
-		return this.prismaService.client.userModel.findFirst({
+		return await this.prismaService.client.userModel.findFirst({
 			where: {
 				login,
 			},
