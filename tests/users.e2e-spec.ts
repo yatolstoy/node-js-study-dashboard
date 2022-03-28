@@ -43,6 +43,12 @@ describe('Users e2e', () => {
 		expect(info.statusCode).toBe(200);
 		expect(info.body.id).toBe(4);
 	});
+
+	it('Unsuccess get info about user', async () => {
+		const res = await request(application.app).get('/user/info');
+
+		expect(res.statusCode).toBe(401);
+	});
 });
 
 afterAll(async () => {
